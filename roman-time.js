@@ -1,49 +1,48 @@
-function GetRomanNumber(number){
-    //var a = new Array("--*+++*--\n\r---+#*---\n\r---+#*---\n\r---+#*---\n\r---+#*---\n\r---+#*---\n\r--*+++*--");
-    var newRomanNumber = ["","","","","","",""];
-    var arabicNumbers = [1, 4, 5, 9, 10, 40, 50];
-    var romanNumbers = [
-      [".......", "-*+++*-", "--+#*--", "--+#*--", "--+#*--", "--+#*--", "-*+++*-"],//I
-      ["-::::-----...---", "..@@...##....:@.", "..@@...-#=...@-.", "..@@....*#:.+*..", "..@@.....%#:%...", "..@@......#@....", "-====-....--...."],//IV
-      ["--------::-", "-=#-----#--", "--#@---=*--", "---#=-:%---", ".--*#*@----", "..--%#-----", "...--*-----"],//V
-      ["-----------------", "--##---*#%---@*--", "--@@----:#@:@----", "--@@------##-----", "--@@-----@:@#:---", "--@@---:#---%#*--",":=##%*%@%:--%@@%:"],//IX
-      [".............", "..:##...+%...", "....@#-%*....", ".....%#:.....","-...*==#*....","--.%*..+#+...","-%##*..+##@*."],//X
-      ["......................", "..:##...+%....=#-.....", "....@#-%*.....=#-.....", ".....%#:......=#-.....","-...*==#*.....=#-.....","--.%*..+#+....=#-...-=","-%##*..+##@*.+#######-"],//XL
-      [".........", "-.=#-.....", "-.=#-.....", "-.=#-.....","-.=#-.....","-.=#-...-=","-+#######-"]];//L
-    var i = 6;
-    while (number > 0){
-      if (number >= arabicNumbers[i]){
-        for (j=0;j<=6;j++){
-          newRomanNumber[j] += romanNumbers[i][j];
+//'use strict';
+function getRomanNumber(arabicNumber){
+    if (!arabicNumber)
+        return ['.###..###..###..###.','.####.###..####.###.','.########..########.','.########..########.','.###.####..###.####.','.###..###..###..###.'];//NN
+    var romanNumbers = {
+        '1':['-*+++*-', '--+#*--', '--+#*--', '--+#*--', '--+#*--', '-*+++*-'],//I
+        '4':['..@@...##....:@.', '..@@...-#=...@-.', '..@@....*#:.+*..', '..@@.....%#:%...', '..@@......#@....', '-====-....--....'],//IV
+        '5':['-=#-----#--', '--#@---=*--', '---#=-:%---', '.--*#*@----', '..--%#-----', '...--*-----'],//V
+        '9':['--##---*#%---@*--', '--@@----:#@:@----', '--@@------##-----', '--@@-----@:@#:---', '--@@---:#---%#*--',':=##%*%@%:--%@@%:'],//IX
+        '10':['..:##...+%...', '....@#-%*....', '.....%#:.....','-...*==#*....','--.%*..+#+...','-%##*..+##@*.'],//X
+        '40':['..:##...+%....=#-.....', '....@#-%*.....=#-.....', '.....%#:......=#-.....','-...*==#*.....=#-.....','--.%*..+#+....=#-...-=','-%##*..+##@*.+#######-'],//XL
+        '50':['-.=#-.....', '-.=#-.....', '-.=#-.....','-.=#-.....','-.=#-...-=','-+#######-']};//L
+    var newRomanNumber = ['','','','','',''];
+    var i = Object.keys(romanNumbers).length--;
+    var itemNumber;
+    while (arabicNumber > 0){
+        itemNumber = Object.keys(romanNumbers).map(Number)[i];
+        if (arabicNumber >= itemNumber) {
+            for (var j = 0; j <= 6; j++){
+                newRomanNumber[j] += romanNumbers[itemNumber][j];
+            }
+            arabicNumber -= itemNumber;
+        } else {
+            i--;
         }
-        number -=arabicNumbers[i];
-      } else {
-        i-=1;
-      }
     }
     return newRomanNumber;
 }
 
-function GetRomanTime() {
-    var currenttime= new Date();
-    //var hours=0;
-    //var minutes = 0;
-    //var seconds = 0;
-    var hours = currenttime.getHours();
-    var minutes = currenttime.getMinutes();
-    var seconds = currenttime.getSeconds();
-    var delimiter = ["----", "----", "-##-", "----", "----", "-##-", "----"];
-    console.log(currenttime);
-
+function getRomanTime() {
+    var currentTime= new Date();
+    var hours = currentTime.getHours();
     if (hours > 12) hours -= 12;
-    
-    romanHours = GetRomanNumber(hours);
-    romanMinutes = GetRomanNumber(minutes);
-    romanSeconds = GetRomanNumber(seconds);
-    var result = [];
-    for (var i = 0; i <= 6; i++) {
-      result.push(romanHours[i] + delimiter[i] + romanMinutes[i]+ delimiter[i] + romanSeconds[i]);
-      console.log(result[i]);
+    var minutes = currentTime.getMinutes();
+    var seconds = currentTime.getSeconds();
+    var romanHours = getRomanNumber(hours);
+    var romanMinutes = getRomanNumber(minutes);
+    var romanSeconds = getRomanNumber(seconds);
+    var delimiter = ['----', '-##-', '----', '----', '-##-', '----'];
+    for (var i = 0; i < 6; i++) {
+        console.log(romanHours[i] + delimiter[i] + romanMinutes[i]+ delimiter[i] + romanSeconds[i]);
     }
 }
-setInterval(function(){GetRomanTime();}, 1000);
+
+setInterval(function(){
+    process.stdout.write('\033c');//'use strict', clear console 
+    getRomanTime();
+}, 1000);
